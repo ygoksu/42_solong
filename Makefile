@@ -1,26 +1,44 @@
-NAME = so_long
-CFLAGS =  -Wall -Wextra -Werror
-LFLAGS = -framework Appkit -framework OpenGL -L./minilibx -lmlx
-MLX = minilibx/libmlx.a
-SRCS = so_long.c
-PRINTF = ft_printf/libftprintf.a
-GNL = getnextline/get_next_line.c getnextline/get_next_line_utils.c
+NAME		= so_long
+BNAME		= so_long_bonus
+LIBFT		= ft_printf/libft
+CC			= gcc
+FLAGS		= -framework OpenGL -framework AppKit -L ./minilibx -lmlx -Wall -Wextra -Werror
+RM			= rm -f
+PRINTF		= ft_printf/libftprintf.a
+GNL			= getnextline/get_next_line.c getnextline/get_next_line_utils.c
+MLX			= libmlx.a
+B_SRC		= bonus/*.c
+SRC			= $(wildcard Main/*.c)
 
-OBJS = $(SRCS:.c=.o)
+all:		$(NAME)
+			@echo DONE
 
-all: $(NAME) $(MLX) 
-
-$(NAME) : $(OBJS) $(PRINTF)
-	gcc $(OBJS) $(CFLAGS) $(PRINTF) $(GNL) $(LFLAGS)  $(MLX) -o $(NAME)
+$(NAME):	$(SRC) $(PRINTF) $(MLX)
+	gcc $(SRC) $(PRINTF) $(GNL) $(FLAGS) $(MLX) -o so_long
 	@echo "ACCOMPLİSHED"
-$(PRINTF) : 
+
+$(PRINTF) :
 	make -C ft_printf
 
 $(MLX) :
 	make -C minilibx
+	cp minilibx/libmlx.a .
 
-.c.o:
-	$(CC) $(CFLAGS) -c $< -o $@
+bonus:	$(BNAME)
+	@echo "ACCOMPLİSHED BONUS"
+
+$(BNAME):	$(B_SRC) $(PRINTF) $(MLX)
+	gcc $(B_SRC) $(PRINTF) $(GNL) $(FLAGS) $(MLX) -o so_long_bonus
 
 clean:
-	rm -rf $(OBJS) $(NAME)
+			make clean -C ft_printf
+			make clean -C minilibx
+			rm -rf libmlx.a
+
+fclean:		clean
+	@$(RM) -f ft_printf/libftprintf.a
+	@$(RM) -f so_long so_long_bonus
+
+re:			fclean all
+
+.PHONY:		all clean fclean re
